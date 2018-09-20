@@ -34,6 +34,9 @@ else
     echo "The Persistant Volume exists, not creating again"
 fi
 
+# Seem to really help to wait for this drive to be ready
+sleep 15
+
 # Copy the required files(configtx.yaml, cruypto-config.yaml, sample chaincode etc.) into volume
 echo -e "\nCreating Copy artifacts job."
 echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/copyArtifactsJob.yaml"
@@ -59,8 +62,8 @@ echo -e "\nStarting to copy artifacts in persistent volume."
 #fix for this script to work on icp and ICS
 kubectl cp ./artifacts $pod:/shared/
 
-echo "Waiting for 10 more seconds for copying artifacts to avoid any network delay"
-sleep 10
+echo "Waiting for 15 more seconds for copying artifacts to avoid any network delay"
+sleep 15
 JOBSTATUS=$(kubectl get jobs |grep "copyartifacts" |awk '{print $3}')
 while [ "${JOBSTATUS}" != "1" ]; do
     echo "Waiting for copyartifacts job to complete"
